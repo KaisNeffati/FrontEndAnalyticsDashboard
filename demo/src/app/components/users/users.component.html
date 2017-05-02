@@ -1,0 +1,1190 @@
+<mdl-tabs mdl-ripple mdl-tab-active-index="0">
+    <mdl-tab-panel>
+      <mdl-tab-panel-title>
+        <mdl-icon class="mdl-color-text--primary">person</mdl-icon><span> Users </span>
+      </mdl-tab-panel-title>
+      <mdl-tab-panel-content >
+          <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                   <mdl-textfield type="text" #searchFilter (keyup)="0" icon="search"></mdl-textfield>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                    <mdl-card mdl-shadow="2" style="width:100%">
+                        <mdl-card-supporting-text *ngIf='Accounts && Accounts.length' style="width:100%">
+                                    <mdl-list  *ngFor='let Account of Accounts | searchPipe : searchFilter.value | paginate: { itemsPerPage: 6, currentPage: p }'>
+                                    <mdl-list-item mdl-shadow="2" lines="2" style="width:100%">
+                                        <mdl-list-item-primary-content>
+                                        <mdl-icon mdl-list-item-avatar>person</mdl-icon>
+                                        <span>{{ Account.firstName + Account.lastName }}</span>
+                                        <mdl-list-item-sub-title>{{ Account.email }}</mdl-list-item-sub-title>
+                                        </mdl-list-item-primary-content>
+                                        <mdl-list-item-secondary-content>
+                                        <a (click)="editUserDialog.show();SetAccountInForm(Account);"><mdl-icon>mode_edit</mdl-icon></a>
+                                        </mdl-list-item-secondary-content>
+                                        <mdl-list-item-secondary-content>
+                                        <a (click)="delete(Account)"><mdl-icon>delete</mdl-icon></a>
+                                        </mdl-list-item-secondary-content>
+                                    </mdl-list-item>
+                                    </mdl-list>
+                                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </mdl-card-supporting-text>
+                    </mdl-card>   
+                </div>
+                <div class="mdl-cell mdl-cell--2-col"></div>
+          </div>
+      </mdl-tab-panel-content>
+    </mdl-tab-panel>
+<mdl-tab-panel mdl-tab-panel-title="Add User">
+  <div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--2-col"></div>
+  <div class="mdl-cell mdl-cell--8-col">
+ <mdl-card mdl-shadow="2" style="width:100%">
+    <mdl-card-supporting-text  style="width:100%">
+
+        <form class="form-horizontal"
+              novalidate
+              style="margin-top: 20px;"
+              (ngSubmit)="save()"
+              [formGroup]="customerForm">
+            <fieldset>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('firstName').touched || 
+                                              customerForm.get('firstName').dirty) &&
+                                              !customerForm.get('firstName').valid }">
+                    <label class="col-md-2 control-label" 
+                           for="firstNameId">First Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="firstNameId" 
+                               type="text" 
+                               placeholder="First Name (required)" 
+                               formControlName="firstName" />
+                               
+                        <span class="help-block" *ngIf="(customerForm.get('firstName').touched || 
+                                                         customerForm.get('firstName').dirty) && 
+                                                         customerForm.get('firstName').errors">
+                            <span *ngIf="customerForm.get('firstName').errors.required">
+                                Please enter your first name.
+                            </span>
+                            <span *ngIf="customerForm.get('firstName').errors.minlength">
+                                The first name must be longer than 3 characters.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && !customerForm.get('lastName').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="lastNameId">Last Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="lastNameId" 
+                               type="text" 
+                               placeholder="Last Name (required)" 
+                               formControlName="lastName" />
+                        <span class="help-block" *ngIf="(customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && customerForm.get('lastName').errors">
+                            <span *ngIf="customerForm.get('lastName').errors.required">
+                                Please enter your last name.
+                            </span>
+                             <span *ngIf="customerForm.controls.lastName.errors.maxlength">
+                                The last name must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('userName').touched || customerForm.get('userName').dirty) && !customerForm.get('userName').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="userNameId">User Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="userNameId" 
+                               type="text" 
+                               placeholder="Last Name (required)" 
+                               formControlName="userName" />
+                        <span class="help-block" *ngIf="(customerForm.get('userName').touched || customerForm.get('userName').dirty) && customerForm.get('userName').errors">
+                            <span *ngIf="customerForm.get('userName').errors.required">
+                                Please enter your User name.
+                            </span>
+                             <span *ngIf="customerForm.controls.userName.errors.maxlength">
+                                The User name must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-md-2 control-label">Gender</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                                <input type="radio" 
+                                       value="nonspecified" 
+                                       formControlName = "gender">Non specified
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="male" 
+                                       formControlName = "gender">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="female" 
+                                       formControlName = "gender">Female
+                            </label>
+                    </div>
+                </div>
+
+                
+                <div formGroupName="passwordGroup"
+                     [ngClass]="{'has-error': customerForm.get('passwordGroup').errors }">
+                     
+                    <div class="form-group"
+                         [ngClass]="{'has-error': passowrdMessage}">
+                        <label class="col-md-2 control-label" 
+                            for="passwordId">Password</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="passwordId" 
+                                type="password" 
+                                placeholder="Password (required)" 
+                                formControlName = "password" />
+                            <span class="help-block" *ngIf="passowrdMessage">
+                                {{ passwordMessage }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group"
+                        [ngClass]="{'has-error': (customerForm.get('passwordGroup.confirmPassword').touched || 
+                                                  customerForm.get('passwordGroup.confirmPassword').dirty) && 
+                                                  !customerForm.get('passwordGroup.confirmPassword').valid }">
+                        <label class="col-md-2 control-label" 
+                            for="confirmEmailId">Confirm Password</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="confirmPasswordId" 
+                                type="password" 
+                                placeholder="Confirm Password (required)" 
+                                formControlName = "confirmPassword" />
+                            <span class="help-block" *ngIf="(customerForm.get('passwordGroup.confirmPassword').touched || 
+                                                            customerForm.get('passwordGroup.confirmPassword').dirty) && 
+                                                            (customerForm.get('passwordGroup.confirmPassword').errors ||
+                                                             customerForm.get('passwordGroup').errors)">
+                                <span *ngIf="customerForm.get('passwordGroup.confirmPassword').errors?.required">
+                                    Please confirm your password.
+                                </span>
+                                <span *ngIf="customerForm.get('passwordGroup').errors?.match">
+                                    The confirmation does not match the password.
+                                </span>                          
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+    
+                
+                <div formGroupName="emailGroup"
+                     [ngClass]="{'has-error': customerForm.get('emailGroup').errors }">
+                     
+                    <div class="form-group"
+                         [ngClass]="{'has-error': emailMessage}">
+                        <label class="col-md-2 control-label" 
+                            for="emailId">Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="emailId" 
+                                type="email" 
+                                placeholder="Email (required)" 
+                                formControlName = "email" />
+                            <span class="help-block" *ngIf="emailMessage">
+                                {{ emailMessage }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group"
+                        [ngClass]="{'has-error': (customerForm.get('emailGroup.confirmEmail').touched || 
+                                                  customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                  !customerForm.get('emailGroup.confirmEmail').valid }">
+                        <label class="col-md-2 control-label" 
+                            for="confirmEmailId">Confirm Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="confirmEmailId" 
+                                type="email" 
+                                placeholder="Confirm Email (required)" 
+                                formControlName = "confirmEmail" />
+                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
+                                                            customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                            (customerForm.get('emailGroup.confirmEmail').errors ||
+                                                             customerForm.get('emailGroup').errors)">
+                                <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                                    Please confirm your email address.
+                                </span>
+                                <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                                    The confirmation does not match the email address.
+                                </span>                          
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-md-2 control-label">Status</label>
+                    <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="active" 
+                                       formControlName = "status">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="inactive" 
+                                       formControlName = "status">Inactive
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="suspended" 
+                                       formControlName = "status">Suspended
+                            </label>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('birthdate').touched || customerForm.get('birthdate').dirty) && !customerForm.get('birthdate').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="birthdateId">Birth Date</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="birthdateId" 
+                               type="date" 
+                               placeholder="Last Name (required)" 
+                               formControlName="birthdate" />
+                        <span class="help-block" *ngIf="(customerForm.get('birthdate').touched || customerForm.get('birthdate').dirty) && customerForm.get('birthdate').errors">
+                            <span *ngIf="customerForm.get('birthdate').errors.required">
+                                Please enter your Birth Date.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': !customerForm.get('phone').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="phoneId">Phone</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="phoneId" 
+                               type="tel" 
+                               placeholder="Phone" 
+                               formControlName = "phone" />
+                        <span class="help-block" *ngIf="customerForm.get('phone').errors">
+                            <span *ngIf="customerForm.get('phone').errors.required">
+                                Please enter your phone number.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+
+                                            
+                <div formGroupName="address">
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label" 
+                                    for="cityId">City, State, Zip Code</label>
+                                <div class="col-md-3">
+                                    <input type="text" 
+                                        class="form-control" 
+                                        id="city" 
+                                        placeholder="City"
+                                        formControlName="city">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control"
+                                            id="state"
+                                            formControlName="state">
+                                        <option value="" disabled selected hidden>Select a State...</option>
+                                        <option value="AF">Afghanistan</option>
+                                        <option value="AX">Åland Islands</option>
+                                        <option value="AL">Albania</option>
+                                        <option value="DZ">Algeria</option>
+                                        <option value="AS">American Samoa</option>
+                                        <option value="AD">Andorra</option>
+                                        <option value="AO">Angola</option>
+                                        <option value="AI">Anguilla</option>
+                                        <option value="AQ">Antarctica</option>
+                                        <option value="AG">Antigua and Barbuda</option>
+                                        <option value="AR">Argentina</option>
+                                        <option value="AM">Armenia</option>
+                                        <option value="AW">Aruba</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="AT">Austria</option>
+                                        <option value="AZ">Azerbaijan</option>
+                                        <option value="BS">Bahamas</option>
+                                        <option value="BH">Bahrain</option>
+                                        <option value="BD">Bangladesh</option>
+                                        <option value="BB">Barbados</option>
+                                        <option value="BY">Belarus</option>
+                                        <option value="BE">Belgium</option>
+                                        <option value="BZ">Belize</option>
+                                        <option value="BJ">Benin</option>
+                                        <option value="BM">Bermuda</option>
+                                        <option value="BT">Bhutan</option>
+                                        <option value="BO">Bolivia, Plurinational State of</option>
+                                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                                        <option value="BA">Bosnia and Herzegovina</option>
+                                        <option value="BW">Botswana</option>
+                                        <option value="BV">Bouvet Island</option>
+                                        <option value="BR">Brazil</option>
+                                        <option value="IO">British Indian Ocean Territory</option>
+                                        <option value="BN">Brunei Darussalam</option>
+                                        <option value="BG">Bulgaria</option>
+                                        <option value="BF">Burkina Faso</option>
+                                        <option value="BI">Burundi</option>
+                                        <option value="KH">Cambodia</option>
+                                        <option value="CM">Cameroon</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="CV">Cape Verde</option>
+                                        <option value="KY">Cayman Islands</option>
+                                        <option value="CF">Central African Republic</option>
+                                        <option value="TD">Chad</option>
+                                        <option value="CL">Chile</option>
+                                        <option value="CN">China</option>
+                                        <option value="CX">Christmas Island</option>
+                                        <option value="CC">Cocos (Keeling) Islands</option>
+                                        <option value="CO">Colombia</option>
+                                        <option value="KM">Comoros</option>
+                                        <option value="CG">Congo</option>
+                                        <option value="CD">Congo, the Democratic Republic of the</option>
+                                        <option value="CK">Cook Islands</option>
+                                        <option value="CR">Costa Rica</option>
+                                        <option value="CI">Côte d'Ivoire</option>
+                                        <option value="HR">Croatia</option>
+                                        <option value="CU">Cuba</option>
+                                        <option value="CW">Curaçao</option>
+                                        <option value="CY">Cyprus</option>
+                                        <option value="CZ">Czech Republic</option>
+                                        <option value="DK">Denmark</option>
+                                        <option value="DJ">Djibouti</option>
+                                        <option value="DM">Dominica</option>
+                                        <option value="DO">Dominican Republic</option>
+                                        <option value="EC">Ecuador</option>
+                                        <option value="EG">Egypt</option>
+                                        <option value="SV">El Salvador</option>
+                                        <option value="GQ">Equatorial Guinea</option>
+                                        <option value="ER">Eritrea</option>
+                                        <option value="EE">Estonia</option>
+                                        <option value="ET">Ethiopia</option>
+                                        <option value="FK">Falkland Islands (Malvinas)</option>
+                                        <option value="FO">Faroe Islands</option>
+                                        <option value="FJ">Fiji</option>
+                                        <option value="FI">Finland</option>
+                                        <option value="FR">France</option>
+                                        <option value="GF">French Guiana</option>
+                                        <option value="PF">French Polynesia</option>
+                                        <option value="TF">French Southern Territories</option>
+                                        <option value="GA">Gabon</option>
+                                        <option value="GM">Gambia</option>
+                                        <option value="GE">Georgia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="GH">Ghana</option>
+                                        <option value="GI">Gibraltar</option>
+                                        <option value="GR">Greece</option>
+                                        <option value="GL">Greenland</option>
+                                        <option value="GD">Grenada</option>
+                                        <option value="GP">Guadeloupe</option>
+                                        <option value="GU">Guam</option>
+                                        <option value="GT">Guatemala</option>
+                                        <option value="GG">Guernsey</option>
+                                        <option value="GN">Guinea</option>
+                                        <option value="GW">Guinea-Bissau</option>
+                                        <option value="GY">Guyana</option>
+                                        <option value="HT">Haiti</option>
+                                        <option value="HM">Heard Island and McDonald Islands</option>
+                                        <option value="VA">Holy See (Vatican City State)</option>
+                                        <option value="HN">Honduras</option>
+                                        <option value="HK">Hong Kong</option>
+                                        <option value="HU">Hungary</option>
+                                        <option value="IS">Iceland</option>
+                                        <option value="IN">India</option>
+                                        <option value="ID">Indonesia</option>
+                                        <option value="IR">Iran, Islamic Republic of</option>
+                                        <option value="IQ">Iraq</option>
+                                        <option value="IE">Ireland</option>
+                                        <option value="IM">Isle of Man</option>
+                                        <option value="IL">Israel</option>
+                                        <option value="IT">Italy</option>
+                                        <option value="JM">Jamaica</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="JE">Jersey</option>
+                                        <option value="JO">Jordan</option>
+                                        <option value="KZ">Kazakhstan</option>
+                                        <option value="KE">Kenya</option>
+                                        <option value="KI">Kiribati</option>
+                                        <option value="KP">Korea, Democratic People's Republic of</option>
+                                        <option value="KR">Korea, Republic of</option>
+                                        <option value="KW">Kuwait</option>
+                                        <option value="KG">Kyrgyzstan</option>
+                                        <option value="LA">Lao People's Democratic Republic</option>
+                                        <option value="LV">Latvia</option>
+                                        <option value="LB">Lebanon</option>
+                                        <option value="LS">Lesotho</option>
+                                        <option value="LR">Liberia</option>
+                                        <option value="LY">Libya</option>
+                                        <option value="LI">Liechtenstein</option>
+                                        <option value="LT">Lithuania</option>
+                                        <option value="LU">Luxembourg</option>
+                                        <option value="MO">Macao</option>
+                                        <option value="MK">Macedonia, the former Yugoslav Republic of</option>
+                                        <option value="MG">Madagascar</option>
+                                        <option value="MW">Malawi</option>
+                                        <option value="MY">Malaysia</option>
+                                        <option value="MV">Maldives</option>
+                                        <option value="ML">Mali</option>
+                                        <option value="MT">Malta</option>
+                                        <option value="MH">Marshall Islands</option>
+                                        <option value="MQ">Martinique</option>
+                                        <option value="MR">Mauritania</option>
+                                        <option value="MU">Mauritius</option>
+                                        <option value="YT">Mayotte</option>
+                                        <option value="MX">Mexico</option>
+                                        <option value="FM">Micronesia, Federated States of</option>
+                                        <option value="MD">Moldova, Republic of</option>
+                                        <option value="MC">Monaco</option>
+                                        <option value="MN">Mongolia</option>
+                                        <option value="ME">Montenegro</option>
+                                        <option value="MS">Montserrat</option>
+                                        <option value="MA">Morocco</option>
+                                        <option value="MZ">Mozambique</option>
+                                        <option value="MM">Myanmar</option>
+                                        <option value="NA">Namibia</option>
+                                        <option value="NR">Nauru</option>
+                                        <option value="NP">Nepal</option>
+                                        <option value="NL">Netherlands</option>
+                                        <option value="NC">New Caledonia</option>
+                                        <option value="NZ">New Zealand</option>
+                                        <option value="NI">Nicaragua</option>
+                                        <option value="NE">Niger</option>
+                                        <option value="NG">Nigeria</option>
+                                        <option value="NU">Niue</option>
+                                        <option value="NF">Norfolk Island</option>
+                                        <option value="MP">Northern Mariana Islands</option>
+                                        <option value="NO">Norway</option>
+                                        <option value="OM">Oman</option>
+                                        <option value="PK">Pakistan</option>
+                                        <option value="PW">Palau</option>
+                                        <option value="PS">Palestinian Territory, Occupied</option>
+                                        <option value="PA">Panama</option>
+                                        <option value="PG">Papua New Guinea</option>
+                                        <option value="PY">Paraguay</option>
+                                        <option value="PE">Peru</option>
+                                        <option value="PH">Philippines</option>
+                                        <option value="PN">Pitcairn</option>
+                                        <option value="PL">Poland</option>
+                                        <option value="PT">Portugal</option>
+                                        <option value="PR">Puerto Rico</option>
+                                        <option value="QA">Qatar</option>
+                                        <option value="RE">Réunion</option>
+                                        <option value="RO">Romania</option>
+                                        <option value="RU">Russian Federation</option>
+                                        <option value="RW">Rwanda</option>
+                                        <option value="BL">Saint Barthélemy</option>
+                                        <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
+                                        <option value="KN">Saint Kitts and Nevis</option>
+                                        <option value="LC">Saint Lucia</option>
+                                        <option value="MF">Saint Martin (French part)</option>
+                                        <option value="PM">Saint Pierre and Miquelon</option>
+                                        <option value="VC">Saint Vincent and the Grenadines</option>
+                                        <option value="WS">Samoa</option>
+                                        <option value="SM">San Marino</option>
+                                        <option value="ST">Sao Tome and Principe</option>
+                                        <option value="SA">Saudi Arabia</option>
+                                        <option value="SN">Senegal</option>
+                                        <option value="RS">Serbia</option>
+                                        <option value="SC">Seychelles</option>
+                                        <option value="SL">Sierra Leone</option>
+                                        <option value="SG">Singapore</option>
+                                        <option value="SX">Sint Maarten (Dutch part)</option>
+                                        <option value="SK">Slovakia</option>
+                                        <option value="SI">Slovenia</option>
+                                        <option value="SB">Solomon Islands</option>
+                                        <option value="SO">Somalia</option>
+                                        <option value="ZA">South Africa</option>
+                                        <option value="GS">South Georgia and the South Sandwich Islands</option>
+                                        <option value="SS">South Sudan</option>
+                                        <option value="ES">Spain</option>
+                                        <option value="LK">Sri Lanka</option>
+                                        <option value="SD">Sudan</option>
+                                        <option value="SR">Suriname</option>
+                                        <option value="SJ">Svalbard and Jan Mayen</option>
+                                        <option value="SZ">Swaziland</option>
+                                        <option value="SE">Sweden</option>
+                                        <option value="CH">Switzerland</option>
+                                        <option value="SY">Syrian Arab Republic</option>
+                                        <option value="TW">Taiwan, Province of China</option>
+                                        <option value="TJ">Tajikistan</option>
+                                        <option value="TZ">Tanzania, United Republic of</option>
+                                        <option value="TH">Thailand</option>
+                                        <option value="TL">Timor-Leste</option>
+                                        <option value="TG">Togo</option>
+                                        <option value="TK">Tokelau</option>
+                                        <option value="TO">Tonga</option>
+                                        <option value="TT">Trinidad and Tobago</option>
+                                        <option value="TN">Tunisia</option>
+                                        <option value="TR">Turkey</option>
+                                        <option value="TM">Turkmenistan</option>
+                                        <option value="TC">Turks and Caicos Islands</option>
+                                        <option value="TV">Tuvalu</option>
+                                        <option value="UG">Uganda</option>
+                                        <option value="UA">Ukraine</option>
+                                        <option value="AE">United Arab Emirates</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="US">United States</option>
+                                        <option value="UM">United States Minor Outlying Islands</option>
+                                        <option value="UY">Uruguay</option>
+                                        <option value="UZ">Uzbekistan</option>
+                                        <option value="VU">Vanuatu</option>
+                                        <option value="VE">Venezuela, Bolivarian Republic of</option>
+                                        <option value="VN">Viet Nam</option>
+                                        <option value="VG">Virgin Islands, British</option>
+                                        <option value="VI">Virgin Islands, U.S.</option>
+                                        <option value="WF">Wallis and Futuna</option>
+                                        <option value="EH">Western Sahara</option>
+                                        <option value="YE">Yemen</option>
+                                        <option value="ZM">Zambia</option>
+                                        <option value="ZW">Zimbabwe</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                <input type="number"
+                                        class="form-control" 
+                                        id="zip"
+                                        placeholder="Zip Code"
+                                        formControlName="zip">
+                                </div>
+                            </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary"
+                                    type="submit"
+                                    [disabled]="!customerForm.valid">
+                                Save
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+
+
+            </fieldset>
+        </form>
+    </mdl-card-supporting-text>
+  </mdl-card>
+
+  </div>
+  <div class="mdl-cell mdl-cell--2-col"></div>
+</div>
+    </mdl-tab-panel>
+ </mdl-tabs>
+
+<mdl-dialog #editUserDialog
+            [mdl-dialog-config]="{
+              clickOutsideToClose: true,
+              styles:{'width': '90%'},
+              isModal:true,
+              enterTransitionDuration: 400,
+              leaveTransitionDuration: 400}"
+            >
+                
+        <form class="form-horizontal"
+              novalidate
+              style="font-size: small;margin-top: 10px;"
+              (ngSubmit)="update()"
+              [formGroup]="customerForm">
+            <fieldset>
+  <h3 class="mdl-dialog__title">Edit User</h3>
+  <div class="mdl-dialog__content">
+
+                <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--4-col">
+                 <div class="form-group">
+                    <label class="col-md-4 control-label" 
+                        for="userNameId">User Name</label>
+
+                    <div class="col-md-6">
+                        <input class="form-control" 
+                                id="userNameId" 
+                                disabled
+                                type="text"
+                                [value]="account.userName"
+                                placeholder="Last Name (required)" 
+                                formControlName="userName" />
+                    </div>
+                </div>
+                </div>
+                <div class="mdl-cell mdl-cell--4-col">
+                      <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('firstName').touched || 
+                                              customerForm.get('firstName').dirty) &&
+                                              !customerForm.get('firstName').valid }">
+                    <label class="col-md-4 control-label" 
+                           for="firstNameId">First Name</label>
+
+                    <div class="col-md-6">
+                        <input class="form-control" 
+                               id="firstNameId" 
+                               type="text"
+                               [value]="account.firstName" 
+                               placeholder="First Name (required)" 
+                               formControlName="firstName" />
+                               
+                        <span class="help-block" *ngIf="(customerForm.get('firstName').touched || 
+                                                         customerForm.get('firstName').dirty) && 
+                                                         customerForm.get('firstName').errors">
+                            <span *ngIf="customerForm.get('firstName').errors.required">
+                                Please enter your first name.
+                            </span>
+                            <span *ngIf="customerForm.get('firstName').errors.minlength">
+                                The first name must be longer than 3 characters.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                </div>
+                <div class="mdl-cell mdl-cell--4-col">
+                     <div class="form-group"
+                    [ngClass]="{'has-error': (customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && !customerForm.get('lastName').valid }">
+                    <label class="col-md-4 control-label" 
+                        for="lastNameId">Last Name</label>
+
+                    <div class="col-md-6">
+                        <input class="form-control" 
+                               id="lastNameId" 
+                               type="text"
+                               [value]="account.lastName"  
+                               placeholder="Last Name (required)" 
+                               formControlName="lastName" />
+                        <span class="help-block" *ngIf="(customerForm.get('lastName').touched || customerForm.get('lastName').dirty) && customerForm.get('lastName').errors">
+                            <span *ngIf="customerForm.get('lastName').errors.required">
+                                Please enter your last name.
+                            </span>
+                             <span *ngIf="customerForm.controls.lastName.errors.maxlength">
+                                The last name must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--6-col">
+                    <div class="form-group" >
+                    <label class="col-md-2 control-label">Status</label>
+                    <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="active" 
+                                       formControlName = "status">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="inactive" 
+                                       formControlName = "status">Inactive
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="suspended" 
+                                       formControlName = "status">Suspended
+                            </label>
+                    </div>
+                </div>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                    <div class="form-group" >
+                    <label class="col-md-2 control-label">Gender</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                                <input type="radio" 
+                                       value="nonspecified" 
+                                       formControlName = "gender">Non specified
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="male" 
+                                       formControlName = "gender">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="female" 
+                                       formControlName = "gender">Female
+                            </label>
+                    </div>
+                </div>    
+                </div>
+                </div>
+      
+                <div formGroupName="passwordGroup"
+                     [ngClass]="{'has-error': customerForm.get('passwordGroup').errors }">
+                     <div class="mdl-grid">
+                        <div class="mdl-cell mdl-cell--6-col">
+                            <div class="form-group"
+                         [ngClass]="{'has-error': passowrdMessage}">
+                        <label class="col-md-2 control-label" 
+                            for="passwordId">Password</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="passwordId" 
+                                type="password"
+                               [value]="account.password"  
+                                placeholder="Password (required)" 
+                                formControlName = "password" />
+                            <span class="help-block" *ngIf="passowrdMessage">
+                                {{ passwordMessage }}
+                            </span>
+                        </div>
+                    </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--6-col">
+                            <div class="form-group"
+                                [ngClass]="{'has-error': (customerForm.get('passwordGroup.confirmPassword').touched || 
+                                                        customerForm.get('passwordGroup.confirmPassword').dirty) && 
+                                                        !customerForm.get('passwordGroup.confirmPassword').valid }">
+                                <label class="col-md-2 control-label" 
+                                    for="confirmEmailId">Confirm Password</label>
+
+                                <div class="col-md-8">
+                                    <input class="form-control" 
+                                        id="confirmPasswordId" 
+                                        type="password" 
+                                        placeholder="Confirm Password (required)" 
+                                        formControlName = "confirmPassword" />
+                                    <span class="help-block" *ngIf="(customerForm.get('passwordGroup.confirmPassword').touched || 
+                                                                    customerForm.get('passwordGroup.confirmPassword').dirty) && 
+                                                                    (customerForm.get('passwordGroup.confirmPassword').errors ||
+                                                                    customerForm.get('passwordGroup').errors)">
+                                        <span *ngIf="customerForm.get('passwordGroup.confirmPassword').errors?.required">
+                                            Please confirm your password.
+                                        </span>
+                                        <span *ngIf="customerForm.get('passwordGroup').errors?.match">
+                                            The confirmation does not match the password.
+                                        </span>                          
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    
+                </div>
+                <div formGroupName="emailGroup"
+                     [ngClass]="{'has-error': customerForm.get('emailGroup').errors }">
+                     <div class="mdl-grid">
+                        <div class="mdl-cell mdl-cell--6-col">
+                            <div class="form-group"
+                         [ngClass]="{'has-error': emailMessage}">
+                        <label class="col-md-2 control-label" 
+                            for="emailId">Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="emailId" 
+                                type="email" 
+                               [value]="account.email" 
+                                placeholder="Email (required)" 
+                                formControlName = "email" />
+                            <span class="help-block" *ngIf="emailMessage">
+                                {{ emailMessage }}
+                            </span>
+                        </div>
+                    </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--6-col">
+                            <div class="form-group"
+                        [ngClass]="{'has-error': (customerForm.get('emailGroup.confirmEmail').touched || 
+                                                  customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                  !customerForm.get('emailGroup.confirmEmail').valid }">
+                        <label class="col-md-2 control-label" 
+                            for="confirmEmailId">Confirm Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="confirmEmailId" 
+                                type="email" 
+                                placeholder="Confirm Email (required)" 
+                                formControlName = "confirmEmail" />
+                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
+                                                            customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                            (customerForm.get('emailGroup.confirmEmail').errors ||
+                                                             customerForm.get('emailGroup').errors)">
+                                <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                                    Please confirm your email address.
+                                </span>
+                                <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                                    The confirmation does not match the email address.
+                                </span>                          
+                            </span>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--6-col">
+                        
+                                    <div class="form-group"
+                                        [ngClass]="{'has-error': (customerForm.get('birthdate').touched || customerForm.get('birthdate').dirty) && !customerForm.get('birthdate').valid }">
+                                        <label class="col-md-2 control-label" 
+                                            for="birthdateId">Birth Date</label>
+
+                                        <div class="col-md-8">
+                                            <input class="form-control" 
+                                                id="birthdateId" 
+                                                [value]="account.birthdate" 
+                                                type="date" 
+                                                placeholder="Last Name (required)" 
+                                                formControlName="birthdate" />
+                                            <span class="help-block" *ngIf="(customerForm.get('birthdate').touched || customerForm.get('birthdate').dirty) && customerForm.get('birthdate').errors">
+                                                <span *ngIf="customerForm.get('birthdate').errors.required">
+                                                    Please enter your Birth Date.
+                                                </span>
+                                        </span>
+                                        </div>
+                                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                        
+                                    <div class="form-group"
+                                        [ngClass]="{'has-error': !customerForm.get('phone').valid }">
+                                        <label class="col-md-2 control-label" 
+                                            for="phoneId">Phone</label>
+
+                                        <div class="col-md-8">
+                                            <input class="form-control" 
+                                                id="phoneId" 
+                                                type="tel" 
+                                                 [value]="account.phone"
+                                                placeholder="Phone" 
+                                                formControlName = "phone" />
+                                            <span class="help-block" *ngIf="customerForm.get('phone').errors">
+                                                <span *ngIf="customerForm.get('phone').errors.required">
+                                                    Please enter your phone number.
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>     
+                    </div>
+                    </div>                                       
+                
+                <div formGroupName="address">
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label" 
+                                    for="cityId">City, State, Zip Code</label>
+                                <div class="col-md-3">
+                                    <input type="text" 
+                                        class="form-control" 
+                                        id="city" 
+                                         [value]="account.city"
+                                        placeholder="City"
+                                        formControlName="city">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control"
+                                            id="state"
+                                             [value]="account.state"
+                                            formControlName="state">
+                                        <option value="" disabled selected hidden>Select a State...</option>
+                                        <option value="AF">Afghanistan</option>
+                                        <option value="AX">Åland Islands</option>
+                                        <option value="AL">Albania</option>
+                                        <option value="DZ">Algeria</option>
+                                        <option value="AS">American Samoa</option>
+                                        <option value="AD">Andorra</option>
+                                        <option value="AO">Angola</option>
+                                        <option value="AI">Anguilla</option>
+                                        <option value="AQ">Antarctica</option>
+                                        <option value="AG">Antigua and Barbuda</option>
+                                        <option value="AR">Argentina</option>
+                                        <option value="AM">Armenia</option>
+                                        <option value="AW">Aruba</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="AT">Austria</option>
+                                        <option value="AZ">Azerbaijan</option>
+                                        <option value="BS">Bahamas</option>
+                                        <option value="BH">Bahrain</option>
+                                        <option value="BD">Bangladesh</option>
+                                        <option value="BB">Barbados</option>
+                                        <option value="BY">Belarus</option>
+                                        <option value="BE">Belgium</option>
+                                        <option value="BZ">Belize</option>
+                                        <option value="BJ">Benin</option>
+                                        <option value="BM">Bermuda</option>
+                                        <option value="BT">Bhutan</option>
+                                        <option value="BO">Bolivia, Plurinational State of</option>
+                                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                                        <option value="BA">Bosnia and Herzegovina</option>
+                                        <option value="BW">Botswana</option>
+                                        <option value="BV">Bouvet Island</option>
+                                        <option value="BR">Brazil</option>
+                                        <option value="IO">British Indian Ocean Territory</option>
+                                        <option value="BN">Brunei Darussalam</option>
+                                        <option value="BG">Bulgaria</option>
+                                        <option value="BF">Burkina Faso</option>
+                                        <option value="BI">Burundi</option>
+                                        <option value="KH">Cambodia</option>
+                                        <option value="CM">Cameroon</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="CV">Cape Verde</option>
+                                        <option value="KY">Cayman Islands</option>
+                                        <option value="CF">Central African Republic</option>
+                                        <option value="TD">Chad</option>
+                                        <option value="CL">Chile</option>
+                                        <option value="CN">China</option>
+                                        <option value="CX">Christmas Island</option>
+                                        <option value="CC">Cocos (Keeling) Islands</option>
+                                        <option value="CO">Colombia</option>
+                                        <option value="KM">Comoros</option>
+                                        <option value="CG">Congo</option>
+                                        <option value="CD">Congo, the Democratic Republic of the</option>
+                                        <option value="CK">Cook Islands</option>
+                                        <option value="CR">Costa Rica</option>
+                                        <option value="CI">Côte d'Ivoire</option>
+                                        <option value="HR">Croatia</option>
+                                        <option value="CU">Cuba</option>
+                                        <option value="CW">Curaçao</option>
+                                        <option value="CY">Cyprus</option>
+                                        <option value="CZ">Czech Republic</option>
+                                        <option value="DK">Denmark</option>
+                                        <option value="DJ">Djibouti</option>
+                                        <option value="DM">Dominica</option>
+                                        <option value="DO">Dominican Republic</option>
+                                        <option value="EC">Ecuador</option>
+                                        <option value="EG">Egypt</option>
+                                        <option value="SV">El Salvador</option>
+                                        <option value="GQ">Equatorial Guinea</option>
+                                        <option value="ER">Eritrea</option>
+                                        <option value="EE">Estonia</option>
+                                        <option value="ET">Ethiopia</option>
+                                        <option value="FK">Falkland Islands (Malvinas)</option>
+                                        <option value="FO">Faroe Islands</option>
+                                        <option value="FJ">Fiji</option>
+                                        <option value="FI">Finland</option>
+                                        <option value="FR">France</option>
+                                        <option value="GF">French Guiana</option>
+                                        <option value="PF">French Polynesia</option>
+                                        <option value="TF">French Southern Territories</option>
+                                        <option value="GA">Gabon</option>
+                                        <option value="GM">Gambia</option>
+                                        <option value="GE">Georgia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="GH">Ghana</option>
+                                        <option value="GI">Gibraltar</option>
+                                        <option value="GR">Greece</option>
+                                        <option value="GL">Greenland</option>
+                                        <option value="GD">Grenada</option>
+                                        <option value="GP">Guadeloupe</option>
+                                        <option value="GU">Guam</option>
+                                        <option value="GT">Guatemala</option>
+                                        <option value="GG">Guernsey</option>
+                                        <option value="GN">Guinea</option>
+                                        <option value="GW">Guinea-Bissau</option>
+                                        <option value="GY">Guyana</option>
+                                        <option value="HT">Haiti</option>
+                                        <option value="HM">Heard Island and McDonald Islands</option>
+                                        <option value="VA">Holy See (Vatican City State)</option>
+                                        <option value="HN">Honduras</option>
+                                        <option value="HK">Hong Kong</option>
+                                        <option value="HU">Hungary</option>
+                                        <option value="IS">Iceland</option>
+                                        <option value="IN">India</option>
+                                        <option value="ID">Indonesia</option>
+                                        <option value="IR">Iran, Islamic Republic of</option>
+                                        <option value="IQ">Iraq</option>
+                                        <option value="IE">Ireland</option>
+                                        <option value="IM">Isle of Man</option>
+                                        <option value="IL">Israel</option>
+                                        <option value="IT">Italy</option>
+                                        <option value="JM">Jamaica</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="JE">Jersey</option>
+                                        <option value="JO">Jordan</option>
+                                        <option value="KZ">Kazakhstan</option>
+                                        <option value="KE">Kenya</option>
+                                        <option value="KI">Kiribati</option>
+                                        <option value="KP">Korea, Democratic People's Republic of</option>
+                                        <option value="KR">Korea, Republic of</option>
+                                        <option value="KW">Kuwait</option>
+                                        <option value="KG">Kyrgyzstan</option>
+                                        <option value="LA">Lao People's Democratic Republic</option>
+                                        <option value="LV">Latvia</option>
+                                        <option value="LB">Lebanon</option>
+                                        <option value="LS">Lesotho</option>
+                                        <option value="LR">Liberia</option>
+                                        <option value="LY">Libya</option>
+                                        <option value="LI">Liechtenstein</option>
+                                        <option value="LT">Lithuania</option>
+                                        <option value="LU">Luxembourg</option>
+                                        <option value="MO">Macao</option>
+                                        <option value="MK">Macedonia, the former Yugoslav Republic of</option>
+                                        <option value="MG">Madagascar</option>
+                                        <option value="MW">Malawi</option>
+                                        <option value="MY">Malaysia</option>
+                                        <option value="MV">Maldives</option>
+                                        <option value="ML">Mali</option>
+                                        <option value="MT">Malta</option>
+                                        <option value="MH">Marshall Islands</option>
+                                        <option value="MQ">Martinique</option>
+                                        <option value="MR">Mauritania</option>
+                                        <option value="MU">Mauritius</option>
+                                        <option value="YT">Mayotte</option>
+                                        <option value="MX">Mexico</option>
+                                        <option value="FM">Micronesia, Federated States of</option>
+                                        <option value="MD">Moldova, Republic of</option>
+                                        <option value="MC">Monaco</option>
+                                        <option value="MN">Mongolia</option>
+                                        <option value="ME">Montenegro</option>
+                                        <option value="MS">Montserrat</option>
+                                        <option value="MA">Morocco</option>
+                                        <option value="MZ">Mozambique</option>
+                                        <option value="MM">Myanmar</option>
+                                        <option value="NA">Namibia</option>
+                                        <option value="NR">Nauru</option>
+                                        <option value="NP">Nepal</option>
+                                        <option value="NL">Netherlands</option>
+                                        <option value="NC">New Caledonia</option>
+                                        <option value="NZ">New Zealand</option>
+                                        <option value="NI">Nicaragua</option>
+                                        <option value="NE">Niger</option>
+                                        <option value="NG">Nigeria</option>
+                                        <option value="NU">Niue</option>
+                                        <option value="NF">Norfolk Island</option>
+                                        <option value="MP">Northern Mariana Islands</option>
+                                        <option value="NO">Norway</option>
+                                        <option value="OM">Oman</option>
+                                        <option value="PK">Pakistan</option>
+                                        <option value="PW">Palau</option>
+                                        <option value="PS">Palestinian Territory, Occupied</option>
+                                        <option value="PA">Panama</option>
+                                        <option value="PG">Papua New Guinea</option>
+                                        <option value="PY">Paraguay</option>
+                                        <option value="PE">Peru</option>
+                                        <option value="PH">Philippines</option>
+                                        <option value="PN">Pitcairn</option>
+                                        <option value="PL">Poland</option>
+                                        <option value="PT">Portugal</option>
+                                        <option value="PR">Puerto Rico</option>
+                                        <option value="QA">Qatar</option>
+                                        <option value="RE">Réunion</option>
+                                        <option value="RO">Romania</option>
+                                        <option value="RU">Russian Federation</option>
+                                        <option value="RW">Rwanda</option>
+                                        <option value="BL">Saint Barthélemy</option>
+                                        <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
+                                        <option value="KN">Saint Kitts and Nevis</option>
+                                        <option value="LC">Saint Lucia</option>
+                                        <option value="MF">Saint Martin (French part)</option>
+                                        <option value="PM">Saint Pierre and Miquelon</option>
+                                        <option value="VC">Saint Vincent and the Grenadines</option>
+                                        <option value="WS">Samoa</option>
+                                        <option value="SM">San Marino</option>
+                                        <option value="ST">Sao Tome and Principe</option>
+                                        <option value="SA">Saudi Arabia</option>
+                                        <option value="SN">Senegal</option>
+                                        <option value="RS">Serbia</option>
+                                        <option value="SC">Seychelles</option>
+                                        <option value="SL">Sierra Leone</option>
+                                        <option value="SG">Singapore</option>
+                                        <option value="SX">Sint Maarten (Dutch part)</option>
+                                        <option value="SK">Slovakia</option>
+                                        <option value="SI">Slovenia</option>
+                                        <option value="SB">Solomon Islands</option>
+                                        <option value="SO">Somalia</option>
+                                        <option value="ZA">South Africa</option>
+                                        <option value="GS">South Georgia and the South Sandwich Islands</option>
+                                        <option value="SS">South Sudan</option>
+                                        <option value="ES">Spain</option>
+                                        <option value="LK">Sri Lanka</option>
+                                        <option value="SD">Sudan</option>
+                                        <option value="SR">Suriname</option>
+                                        <option value="SJ">Svalbard and Jan Mayen</option>
+                                        <option value="SZ">Swaziland</option>
+                                        <option value="SE">Sweden</option>
+                                        <option value="CH">Switzerland</option>
+                                        <option value="SY">Syrian Arab Republic</option>
+                                        <option value="TW">Taiwan, Province of China</option>
+                                        <option value="TJ">Tajikistan</option>
+                                        <option value="TZ">Tanzania, United Republic of</option>
+                                        <option value="TH">Thailand</option>
+                                        <option value="TL">Timor-Leste</option>
+                                        <option value="TG">Togo</option>
+                                        <option value="TK">Tokelau</option>
+                                        <option value="TO">Tonga</option>
+                                        <option value="TT">Trinidad and Tobago</option>
+                                        <option value="TN">Tunisia</option>
+                                        <option value="TR">Turkey</option>
+                                        <option value="TM">Turkmenistan</option>
+                                        <option value="TC">Turks and Caicos Islands</option>
+                                        <option value="TV">Tuvalu</option>
+                                        <option value="UG">Uganda</option>
+                                        <option value="UA">Ukraine</option>
+                                        <option value="AE">United Arab Emirates</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="US">United States</option>
+                                        <option value="UM">United States Minor Outlying Islands</option>
+                                        <option value="UY">Uruguay</option>
+                                        <option value="UZ">Uzbekistan</option>
+                                        <option value="VU">Vanuatu</option>
+                                        <option value="VE">Venezuela, Bolivarian Republic of</option>
+                                        <option value="VN">Viet Nam</option>
+                                        <option value="VG">Virgin Islands, British</option>
+                                        <option value="VI">Virgin Islands, U.S.</option>
+                                        <option value="WF">Wallis and Futuna</option>
+                                        <option value="EH">Western Sahara</option>
+                                        <option value="YE">Yemen</option>
+                                        <option value="ZM">Zambia</option>
+                                        <option value="ZW">Zimbabwe</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                <input type="number"
+                                        class="form-control" 
+                                        id="zip"
+                                         [value]="account.zip"
+                                        placeholder="Zip Code"
+                                        formControlName="zip">
+                                </div>
+                            </div>
+                </div>            
+    
+  </div>
+  <div class="mdl-dialog__actions">
+     <div class="form-group" id="saveupdate">
+    <button mdl-button type="submit" (click)="update()" [disabled]="!customerForm.valid" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
+    <button mdl-button (click)="editUserDialog.close()" mdl-ripple>Cancel</button>
+    </div>
+  </div>
+  </fieldset>
+</form>
+</mdl-dialog>
+
+
+          <img src="../assets/img/analytics-header.png" width="100%">
+          

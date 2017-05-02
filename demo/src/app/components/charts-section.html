@@ -1,0 +1,15 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--4-col">
+    <chart-section [ts]="desc.radarChart.ts" [html]="desc.radarChart.html" [heading]="desc.radarChart.heading"><radar-chart-demo></radar-chart-demo></chart-section>
+  </div>
+  <div class="mdl-cell mdl-cell--8-col">
+ <chart-section [ts]="desc.polarChart.ts" [html]="desc.polarChart.html" [heading]="desc.polarChart.heading"><polar-area-chart-demo></polar-area-chart-demo></chart-section>
+ 
+  </div>
+</div>
+<chart-section [ts]="desc.barChart.ts" [html]="desc.barChart.html" [heading]="desc.barChart.heading"><bar-chart-demo></bar-chart-demo></chart-section>
+
+    <chart-section [ts]="desc.pieChart.ts" [html]="desc.pieChart.html" [heading]="desc.pieChart.heading"><pie-chart-demo></pie-chart-demo></chart-section>
+        <chart-section [ts]="desc.lineChart.ts" [html]="desc.lineChart.html" [heading]="desc.lineChart.heading"><line-chart-demo></line-chart-demo></chart-section>
+
+          <img src="../assets/img/analytics-header.png" width="100%">

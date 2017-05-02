@@ -1,0 +1,19 @@
+.form-horizontal .form-group{
+    margin-right: -15% !important;
+    margin-left: 0 !important;
+}
+.form-horizontal .control-label{
+text-align: left !important;
+}
+.mdl-list{
+    padding: 0 !important;
+}
+.mdl-list:hover{
+    background-color:rgba(128, 128, 128, 0.08);
+}
+.mdl-dialog__content,.mdl-grid {
+    padding: 0!important;
+}
+#saveupdate{
+    margin-right: 0 !important;
+}

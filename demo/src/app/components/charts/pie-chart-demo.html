@@ -1,0 +1,28 @@
+
+ <div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--6-col">
+<div style="display: block">
+  <canvas baseChart width="100px" height="100px"
+          [data]="pieChartDataBatch"
+          [labels]="pieChartLabelsBatch"
+          [chartType]="pieChartType"
+          [colors]="pieChartColors"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+</div>
+
+  </div>
+  <div class="mdl-cell mdl-cell--6-col">
+   <div style="display: block">
+  <canvas baseChart width="100px" height="100px"
+          [data]="pieChartDataStreaming"
+          [labels]="pieChartLabelsBatch"
+          [chartType]="pieChartType"
+          [colors]="pieChartColors"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+</div>
+    
+  </div>
+</div>
+

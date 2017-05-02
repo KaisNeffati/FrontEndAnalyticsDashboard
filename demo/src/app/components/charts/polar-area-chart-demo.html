@@ -1,0 +1,28 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--6-col">
+<div style="display: block">
+  <canvas baseChart width="200px" height="200px"
+          [data]="polarAreaChartDataBatch"
+          [labels]="polarAreaChartLabelsBatch"
+          [legend]="polarAreaLegend"
+          [chartType]="polarAreaChartType"
+          [colors]="polarAreaChartColors"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+</div>
+
+   
+  </div>
+  <div class="mdl-cell mdl-cell--6-col">
+  <div style="display: block">
+  <canvas baseChart width="200px" height="200px"
+          [data]="polarAreaChartDataStreaming"
+          [labels]="polarAreaChartLabelsBatch"
+          [legend]="polarAreaLegend"
+          [colors]="polarAreaChartColors"
+          [chartType]="polarAreaChartType"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+  </div>
+  </div>
+</div>

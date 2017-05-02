@@ -1,0 +1,9 @@
+.container{
+    width: 100% !important;
+}
+.mdl-layout-header-row{
+        padding-left: 4% !important;
+}
+.nav{
+    margin-left: 5% !important;
+}

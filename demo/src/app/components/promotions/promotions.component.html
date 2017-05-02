@@ -1,0 +1,391 @@
+<mdl-tabs mdl-ripple mdl-tab-active-index="0">
+    <mdl-tab-panel>
+      <mdl-tab-panel-title>
+        <mdl-icon class="mdl-color-text--primary">notifications</mdl-icon><span> Promotions </span>
+      </mdl-tab-panel-title>
+      <mdl-tab-panel-content >
+          <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col">
+                   <mdl-textfield type="text" #searchFilter (keyup)="0" icon="search"></mdl-textfield>
+                </div>
+                <div class="mdl-cell mdl-cell--8-col">
+                    <mdl-card mdl-shadow="2" style="width:100%">
+                        <mdl-card-supporting-text *ngIf='Promotions && Promotions.length' style="width:100%">
+                                    <mdl-list  *ngFor='let Promotion of Promotions | searchPipe : searchFilter.value  | paginate: { itemsPerPage: 6, currentPage: p }'>
+                                    <mdl-list-item mdl-shadow="2" lines="2" style="width:100%">
+                                        <mdl-list-item-primary-content>
+                                        <mdl-icon mdl-list-item-avatar>notifications</mdl-icon>
+                                        <span>{{ Promotion.name }}</span>
+                                        <mdl-list-item-sub-title>{{ Promotion.partner }}</mdl-list-item-sub-title>
+                                        </mdl-list-item-primary-content>
+                                        <mdl-list-item-secondary-content>
+                                        <a (click)="editPromotionDialog.show();SetPromotionInForm(Promotion);"><mdl-icon>mode_edit</mdl-icon></a>
+                                        </mdl-list-item-secondary-content>
+                                        <mdl-list-item-secondary-content>
+                                        <a (click)="delete(Promotion)"><mdl-icon>delete</mdl-icon></a>
+                                        </mdl-list-item-secondary-content>
+                                    </mdl-list-item>
+                                    </mdl-list>
+                                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </mdl-card-supporting-text>
+                    </mdl-card>   
+                </div>
+                <div class="mdl-cell mdl-cell--2-col"></div>
+          </div>
+      </mdl-tab-panel-content>
+    </mdl-tab-panel>
+<mdl-tab-panel mdl-tab-panel-title="Add Promotion">
+  <div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--2-col"></div>
+  <div class="mdl-cell mdl-cell--8-col">
+ <mdl-card mdl-shadow="2" style="width:100%">
+    <mdl-card-supporting-text  style="width:100%">
+
+        <form class="form-horizontal"
+              novalidate
+              style="margin-top: 20px;"
+              (ngSubmit)="save()"
+              [formGroup]="promotionForm">
+            <fieldset>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('name').touched || 
+                                              promotionForm.get('name').dirty) &&
+                                              !promotionForm.get('name').valid }">
+                    <label class="col-md-2 control-label" 
+                           for="nameId">Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="nameId" 
+                               type="text" 
+                               placeholder="Name (required)" 
+                               formControlName="name" />
+                               
+                        <span class="help-block" *ngIf="(promotionForm.get('name').touched || 
+                                                         promotionForm.get('name').dirty) && 
+                                                         promotionForm.get('name').errors">
+                            <span *ngIf="promotionForm.get('name').errors.required">
+                                Please enter your name.
+                            </span>
+                            <span *ngIf="promotionForm.get('name').errors.minlength">
+                                The name must be longer than 3 characters.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('partner').touched || promotionForm.get('partner').dirty) && !promotionForm.get('partner').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="partnerId">Partner</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="partnerId" 
+                               type="text" 
+                               placeholder="Partner (required)" 
+                               formControlName="partner" />
+                        <span class="help-block" *ngIf="(promotionForm.get('partner').touched || promotionForm.get('partner').dirty) && promotionForm.get('partner').errors">
+                            <span *ngIf="promotionForm.get('partner').errors.required">
+                                Please enter your partner.
+                            </span>
+                             <span *ngIf="promotionForm.controls.partner.errors.maxlength">
+                                The partner must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('type').touched || promotionForm.get('type').dirty) && !promotionForm.get('type').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="typeId">Type</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="typeId" 
+                               type="text" 
+                               placeholder="Type (required)" 
+                               formControlName="type" />
+                        <span class="help-block" *ngIf="(promotionForm.get('type').touched || promotionForm.get('type').dirty) && promotionForm.get('type').errors">
+                            <span *ngIf="promotionForm.get('type').errors.required">
+                                Please enter your type.
+                            </span>
+                             <span *ngIf="promotionForm.controls.type.errors.maxlength">
+                                The Type must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-md-2 control-label">Status</label>
+                    <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="active" 
+                                       formControlName = "status">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="inactive" 
+                                       formControlName = "status">Inactive
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="suspended" 
+                                       formControlName = "status">Suspended
+                            </label>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('startDate').touched || promotionForm.get('startDate').dirty) && !promotionForm.get('startDate').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="startDateId">Start Date</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="startDateId" 
+                               type="date" 
+                               placeholder="Start Date (required)" 
+                               formControlName="startDate" />
+                        <span class="help-block" *ngIf="(promotionForm.get('startDate').touched || promotionForm.get('startDate').dirty) && promotionForm.get('startDate').errors">
+                            <span *ngIf="promotionForm.get('startDate').errors.required">
+                                Please enter your Start Date.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('endDate').touched || promotionForm.get('endDate').dirty) && !promotionForm.get('endDate').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="endDateId">End Date</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="endDateId" 
+                               type="date" 
+                               placeholder="end Date (required)" 
+                               formControlName="endDate" />
+                        <span class="help-block" *ngIf="(promotionForm.get('endDate').touched || promotionForm.get('endDate').dirty) && promotionForm.get('endDate').errors">
+                            <span *ngIf="promotionForm.get('endDate').errors.required">
+                                Please enter your End Date.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': !promotionForm.get('description').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="descriptionId">description</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="descriptionId" 
+                               type="tel" 
+                               placeholder="description" 
+                               formControlName = "description" />
+                        <span class="help-block" *ngIf="promotionForm.get('description').errors">
+                            <span *ngIf="promotionForm.get('description').errors.required">
+                                Please enter your description number.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary"
+                                    type="submit"
+                                    [disabled]="!promotionForm.valid">
+                                Save
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+
+
+            </fieldset>
+        </form>
+    </mdl-card-supporting-text>
+  </mdl-card>
+
+  </div>
+  <div class="mdl-cell mdl-cell--2-col"></div>
+</div>
+    </mdl-tab-panel>
+ </mdl-tabs>
+
+<mdl-dialog #editPromotionDialog
+            [mdl-dialog-config]="{
+              clickOutsideToClose: true,
+              styles:{'width': '90%'},
+              isModal:true,
+              enterTransitionDuration: 400,
+              leaveTransitionDuration: 400}"
+            >
+                
+        <form class="form-horizontal"
+              novalidate
+              style="font-size: small;margin-top: 10px;"
+              (ngSubmit)="update()"
+              [formGroup]="promotionForm">
+              
+            <fieldset>
+  <h3 class="mdl-dialog__title">Edit Promotion</h3>
+  <div class="mdl-dialog__content">
+      
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('name').touched || 
+                                              promotionForm.get('name').dirty) &&
+                                              !promotionForm.get('name').valid }">
+                    <label class="col-md-2 control-label" 
+                           for="nameId">Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="nameId" 
+                               type="text" 
+                               placeholder="Name (required)" 
+                               formControlName="name" />
+                               
+                        <span class="help-block" *ngIf="(promotionForm.get('name').touched || 
+                                                         promotionForm.get('name').dirty) && 
+                                                         promotionForm.get('name').errors">
+                            <span *ngIf="promotionForm.get('name').errors.required">
+                                Please enter your name.
+                            </span>
+                            <span *ngIf="promotionForm.get('name').errors.minlength">
+                                The name must be longer than 3 characters.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('partner').touched || promotionForm.get('partner').dirty) && !promotionForm.get('partner').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="partnerId">Partner</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="partnerId" 
+                               type="text" 
+                               placeholder="Partner (required)" 
+                               formControlName="partner" />
+                        <span class="help-block" *ngIf="(promotionForm.get('partner').touched || promotionForm.get('partner').dirty) && promotionForm.get('partner').errors">
+                            <span *ngIf="promotionForm.get('partner').errors.required">
+                                Please enter your partner.
+                            </span>
+                             <span *ngIf="promotionForm.controls.partner.errors.maxlength">
+                                The partner must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('type').touched || promotionForm.get('type').dirty) && !promotionForm.get('type').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="typeId">Type</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="typeId" 
+                               type="text" 
+                               placeholder="Type (required)" 
+                               formControlName="type" />
+                        <span class="help-block" *ngIf="(promotionForm.get('type').touched || promotionForm.get('type').dirty) && promotionForm.get('type').errors">
+                            <span *ngIf="promotionForm.get('type').errors.required">
+                                Please enter your type.
+                            </span>
+                             <span *ngIf="promotionForm.controls.type.errors.maxlength">
+                                The Type must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-md-2 control-label">Status</label>
+                    <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="active" 
+                                       formControlName = "status">Active
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="inactive" 
+                                       formControlName = "status">Inactive
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="suspended" 
+                                       formControlName = "status">Suspended
+                            </label>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('startDate').touched || promotionForm.get('startDate').dirty) && !promotionForm.get('startDate').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="startDateId">Start Date</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="startDateId" 
+                               type="date" 
+                               placeholder="Start Date (required)" 
+                               formControlName="startDate" />
+                        <span class="help-block" *ngIf="(promotionForm.get('startDate').touched || promotionForm.get('startDate').dirty) && promotionForm.get('startDate').errors">
+                            <span *ngIf="promotionForm.get('startDate').errors.required">
+                                Please enter your Start Date.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (promotionForm.get('endDate').touched || promotionForm.get('endDate').dirty) && !promotionForm.get('endDate').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="endDateId">End Date</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="endDateId" 
+                               type="date" 
+                               placeholder="end Date (required)" 
+                               formControlName="endDate" />
+                        <span class="help-block" *ngIf="(promotionForm.get('endDate').touched || promotionForm.get('endDate').dirty) && promotionForm.get('endDate').errors">
+                            <span *ngIf="promotionForm.get('endDate').errors.required">
+                                Please enter your End Date.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+                <div class="form-group"
+                    [ngClass]="{'has-error': !promotionForm.get('description').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="descriptionId">description</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="descriptionId" 
+                               type="tel" 
+                               placeholder="description" 
+                               formControlName = "description" />
+                        <span class="help-block" *ngIf="promotionForm.get('description').errors">
+                            <span *ngIf="promotionForm.get('description').errors.required">
+                                Please enter your description number.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+  </div>
+  <div class="mdl-dialog__actions">
+     <div class="form-group" id="saveupdate">
+    <button mdl-button type="submit" (click)="update()" [disabled]="!promotionForm.valid" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
+    <button mdl-button (click)="editPromotionDialog.close()" mdl-ripple>Cancel</button>
+    </div>
+  </div>
+  </fieldset>
+</form>
+</mdl-dialog>
+
+
+          <img src="../assets/img/analytics-header.png" width="100%">
+          
